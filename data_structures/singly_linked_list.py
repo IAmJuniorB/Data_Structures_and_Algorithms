@@ -1,10 +1,14 @@
+"""
+Singly Linked List Implementation
+A chain of connected nodes where each node points to the next one,
+like a treasure hunt where each clue points to the location of the next clue.
+"""
+
 class Node:
     """
-    An object for storing a single node of a linked list.
-    
-    Attributes:
-        data: The value stored in the node
-        next_node: Reference to the next node
+    A single node in the linked list, like a box that:
+    - Holds some data (the treasure)
+    - Has an arrow pointing to the next box
 
     Time Complexity: O(1) for all operations
     Space Complexity: O(1)
@@ -18,33 +22,34 @@ class Node:
 
 class LinkedList:
     """
-    Singly linked list implementation.
-    
-    Attributes:
-        head: First node of the linked list
+    A chain of nodes where each points to the next one.
+    Like a scavenger hunt where each location has directions to the next spot.
 
-    Example:
-        >>> l = LinkedList()
-        >>> l.add(1)
-        >>> l.add(2)
-        >>> print(l)
-        [Head: 2]->[Tail: 1]
+    Time Complexity:
+        - Add to front: O(1)
+        - Find node: O(n)
+        - Get size: O(n)
+    Space Complexity: O(n) where n is number of nodes
     """
     def __init__(self):
+        # Start with empty list (no boxes yet)
         self.head = None
 
     def is_empty(self) -> bool:
         """
         Check if list is empty.
-        
+        Like checking if we have any boxes at all.
+
         Time Complexity: O(1)
+        Space Complexity: O(1)
         """
         return self.head == None
 
     def size(self) -> int:
         """
-        Returns number of nodes in the list.
-        
+        Count number of nodes in list.
+        Like counting boxes by following the arrows.
+
         Time Complexity: O(n)
         Space Complexity: O(1)
         """
@@ -57,8 +62,9 @@ class LinkedList:
 
     def add(self, data) -> None:
         """
-        Add new Node containing data at head of list.
-        
+        Add new node at start of list.
+        Like adding a new box at the beginning of our treasure hunt.
+
         Time Complexity: O(1)
         Space Complexity: O(1)
         """
@@ -68,15 +74,18 @@ class LinkedList:
 
     def node_at_index(self, index: int) -> Node:
         """
-        Return node at specified index.
-        
+        Find node at given position.
+        Like following the arrows count times to find a specific box.
+
         Time Complexity: O(n)
         Space Complexity: O(1)
         """
         if index == 0:
             return self.head
+            
         current = self.head
         position = 0
+        
         while position < index:
             current = current.next_node
             position += 1
@@ -84,8 +93,9 @@ class LinkedList:
 
     def __repr__(self) -> str:
         """
-        Return string representation of the list.
-        
+        Create string showing all nodes.
+        Like drawing a map of our treasure hunt.
+
         Time Complexity: O(n)
         Space Complexity: O(n)
         """
@@ -102,11 +112,21 @@ class LinkedList:
         return '->'.join(nodes)
 
 if __name__ == "__main__":
-    # Test implementation
+    # Test our linked list
     l = LinkedList()
+    
+    # Test adding elements
+    print("Adding elements 3, 2, 1:")
     l.add(1)
     l.add(2)
     l.add(3)
     print(f"List: {l}")
+    
+    # Test size and node finding
     print(f"Size: {l.size()}")
     print(f"Node at index 1: {l.node_at_index(1)}")
+    
+    # Test empty list
+    empty_list = LinkedList()
+    print(f"\nEmpty list is empty: {empty_list.is_empty()}")
+    print(f"Empty list size: {empty_list.size()}")
