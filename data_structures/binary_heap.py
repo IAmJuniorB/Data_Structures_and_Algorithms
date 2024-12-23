@@ -1,153 +1,146 @@
 """
-Binary Search Tree Implementation
-A tree data structure where each node has at most two children, with all left nodes being smaller 
-and all right nodes being larger than their parent.
+Binary Heap Implementation
+A complete binary tree that satisfies the heap property - parent is always smaller 
+(min heap) or larger (max heap) than its children.
 """
 
-class BSTNode:
+class BinaryHeap:
     """
-    A node in the binary search tree, like a container holding:
-    - A value (key)
-    - Links to two other containers (left and right children)
+    Binary Heap implementation supporting both min and max heaps.
 
-    Time Complexity: O(1) for creating a new node
-    Space Complexity: O(1) for storing node information
+    Time Complexity:
+        - Insert: O(log n)
+        - Extract min/max: O(log n)
+        - Get min/max: O(1)
+        - Heapify: O(log n)
+    Space Complexity: O(n) where n is number of elements
     """
-    def __init__(self, key):
-        # The value stored in this container
-        self.key = key
-        # Links to smaller values (left) and larger values (right)
-        self.left = None
-        self.right = None
+    def __init__(self, max_heap=False):
+        # Store heap elements in a list (like a pyramid of numbers)
+        self.heap = []
+        # True for max heap (largest on top), False for min heap (smallest on top)
+        self.max_heap = max_heap
 
-class BST:
-    """
-    Binary Search Tree where values are organized like a family tree:
-    smaller values go to the left, larger values to the right.
+    def parent(self, i):
+        """Find parent's position, like finding a parent in a family tree."""
+        return (i - 1) // 2
 
-    Operations and their speeds:
-    - Adding a new value (Insert): O(h) where h is height of tree
-    - Finding a value (Search): O(h)
-    - Removing a value (Delete): O(h)
-    - Best case (balanced): h = log n
-    - Worst case (unbalanced): h = n
+    def left_child(self, i):
+        """Find left child's position, like finding left branch in a tree."""
+        return 2 * i + 1
 
-    Space needed: O(n) where n is number of nodes
-    """
-    def __init__(self):
-        # Start with an empty tree (no nodes)
-        self.root = None
+    def right_child(self, i):
+        """Find right child's position, like finding right branch in a tree."""
+        return 2 * i + 2
+
+    def _compare(self, a, b):
+        """Compare two values based on heap type."""
+        if self.max_heap:
+            return a > b  # For max heap, larger is better
+        return a < b  # For min heap, smaller is better
+
+    def _swap(self, i, j):
+        """Swap two elements, like trading baseball cards."""
+        self.heap[i], self.heap[j] = self.heap[j], self.heap[i]
+
+    def _heapify_up(self, index):
+        """
+        Move a value up the heap until it's in the right spot.
+        Like a bubble floating up in water.
+
+        Time Complexity: O(log n)
+        Space Complexity: O(1)
+        """
+        parent = self.parent(index)
+        if index > 0 and self._compare(self.heap[index], self.heap[parent]):
+            self._swap(index, parent)
+            self._heapify_up(parent)
+
+    def _heapify_down(self, index):
+        """
+        Move a value down the heap until it's in the right spot.
+        Like a heavy stone sinking in water.
+
+        Time Complexity: O(log n)
+        Space Complexity: O(1)
+        """
+        smallest = index
+        left = self.left_child(index)
+        right = self.right_child(index)
+
+        if left < len(self.heap) and self._compare(self.heap[left], self.heap[smallest]):
+            smallest = left
+
+        if right < len(self.heap) and self._compare(self.heap[right], self.heap[smallest]):
+            smallest = right
+
+        if smallest != index:
+            self._swap(index, smallest)
+            self._heapify_down(smallest)
 
     def insert(self, key):
         """
-        Add a new value to the tree.
-        Like finding the right spot in a sorted family photo.
+        Add new value to heap.
+        Like adding a new block to a pyramid.
 
-        Time Complexity: O(h) where h is tree height
+        Time Complexity: O(log n)
         Space Complexity: O(1)
         """
-        if not self.root:
-            self.root = BSTNode(key)
-            return
+        self.heap.append(key)
+        self._heapify_up(len(self.heap) - 1)
 
-        current = self.root
-        while True:
-            # If value is smaller, go left
-            if key < current.key:
-                if current.left is None:
-                    current.left = BSTNode(key)
-                    break
-                current = current.left
-            # If value is larger, go right
-            else:
-                if current.right is None:
-                    current.right = BSTNode(key)
-                    break
-                current = current.right
-
-    def search(self, key):
+    def extract(self):
         """
-        Look for a value in the tree.
-        Like finding someone in a family tree.
+        Remove and return the top element.
+        Like taking the top block off a pyramid.
 
-        Time Complexity: O(h) where h is tree height
+        Time Complexity: O(log n)
         Space Complexity: O(1)
         """
-        current = self.root
-        while current:
-            if key == current.key:
-                return True
-            # If value is smaller, look left
-            elif key < current.key:
-                current = current.left
-            # If value is larger, look right
-            else:
-                current = current.right
-        return False
-
-    def delete(self, key):
-        """
-        Remove a value from the tree while keeping it organized.
-        Like removing someone from a family tree without breaking connections.
-
-        Time Complexity: O(h) where h is tree height
-        Space Complexity: O(1)
-        """
-        self.root = self._delete_recursive(self.root, key)
-
-    def _delete_recursive(self, root, key):
-        if not root:
+        if not self.heap:
             return None
 
-        # Find the node to delete
-        if key < root.key:
-            root.left = self._delete_recursive(root.left, key)
-        elif key > root.key:
-            root.right = self._delete_recursive(root.right, key)
-        else:
-            # Node with only one child or no child
-            if root.left is None:
-                return root.right
-            elif root.right is None:
-                return root.left
-
-            # Node with two children
-            # Get smallest value in right subtree
-            temp = self._find_min(root.right)
-            root.key = temp.key
-            root.right = self._delete_recursive(root.right, temp.key)
+        root = self.heap[0]
+        last_element = self.heap.pop()
+        
+        if self.heap:
+            self.heap[0] = last_element
+            self._heapify_down(0)
 
         return root
 
-    def _find_min(self, node):
-        """Find the smallest value in a subtree."""
-        current = node
-        while current.left:
-            current = current.left
-        return current
-
 if __name__ == "__main__":
-    # Test our binary search tree
-    bst = BST()
+    # Test Min Heap
+    print("Testing Min Heap:")
+    min_heap = BinaryHeap()
+    test_values = [3, 7, 1, 5, 2, 4, 6]
     
-    # Add some numbers
-    print("Adding numbers to tree:")
-    numbers = [50, 30, 70, 20, 40, 60, 80]
-    for num in numbers:
-        bst.insert(num)
-        print(f"Added {num}")
+    print("Inserting values:", test_values)
+    for value in test_values:
+        min_heap.insert(value)
+        print(f"Heap after inserting {value}:", min_heap.heap)
+
+    print("\nExtracting values (should be in ascending order):")
+    while min_heap.heap:
+        print(f"Extracted: {min_heap.extract()}, Remaining heap: {min_heap.heap}")
+
+    # Test Max Heap
+    print("\nTesting Max Heap:")
+    max_heap = BinaryHeap(max_heap=True)
+    print("Inserting same values:", test_values)
+    for value in test_values:
+        max_heap.insert(value)
+        print(f"Heap after inserting {value}:", max_heap.heap)
+
+    print("\nExtracting values (should be in descending order):")
+    while max_heap.heap:
+        print(f"Extracted: {max_heap.extract()}, Remaining heap: {max_heap.heap}")
+
+    # Test edge cases
+    print("\nTesting edge cases:")
+    empty_heap = BinaryHeap()
+    print("Empty heap extract:", empty_heap.extract())
     
-    # Test searching
-    print("\nSearching for values:")
-    search_tests = [20, 90]
-    for num in search_tests:
-        found = bst.search(num)
-        print(f"Searching for {num}: {'Found' if found else 'Not found'}")
-    
-    # Test deletion
-    print("\nDeleting values:")
-    delete_tests = [20, 30, 50]
-    for num in delete_tests:
-        print(f"Deleting {num}")
-        bst.delete(num)
-        print(f"Search after deletion: {'Found' if bst.search(num) else 'Not found'}")
+    single_element = BinaryHeap()
+    single_element.insert(1)
+    print("Single element extract:", single_element.extract())
