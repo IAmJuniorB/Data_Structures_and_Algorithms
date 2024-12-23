@@ -2,6 +2,8 @@
 Raw Array Implementation
 """
 
+import ctypes
+
 class Array:
     """
     Pure array implementation using memory blocks.
@@ -84,6 +86,26 @@ class Array:
             self._data[index] = value
             
         self._size += 1
+        
+    def remove(self, index):
+        """
+        Remove element at given index.
+
+        Args:
+            index: Index of element to remove
+
+        Time Complexity: O(n)
+        Space Complexity: O(1)
+        """
+        if not self._is_valid_index(index):
+            raise IndexError("Remove index out of range")
+
+        # Shift elements left to fill the gap (like sliding books on a shelf)
+        for i in range(index, self._size - 1):
+            self._data[i] = self._data[i + 1]
+        
+        self._data[self._size - 1] = None
+        self._size -= 1
 
 if __name__ == "__main__":
     arr = Array(5)
