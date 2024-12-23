@@ -1,133 +1,108 @@
 """
-Trie Data Structure
+Trie Implementation
+A tree-like data structure for storing and retrieving strings efficiently,
+like a word dictionary where each letter leads to more letters.
 """
-
-from typing import Dict
 
 class TrieNode:
     """
-    Node in the Trie.
-
-    Attributes:
-        children (Dict[str, TrieNode]): Map of child nodes
-        is_end (bool): True if the node represents the end of a word
+    A node in the Trie, like a box that:
+    - Holds letters (children)
+    - Remembers if it's the end of a word
+    
+    Time Complexity: O(1) for node creation
+    Space Complexity: O(1)
     """
     def __init__(self):
+        # Map of letters to child nodes (like a branching path)
         self.children = {}
+        # Is this the end of a word?
         self.is_end = False
 
 class Trie:
     """
-    Trie data structure for efficient string storage and retrieval.
+    A tree for storing strings, where each path from root to leaf spells a word.
+    Like a family tree of letters that form words.
 
     Time Complexity:
-        - Insertion: O(m) where m is the length of the word
-        - Search: O(m) where m is the length of the word
-        - Prefix Search: O(m) where m is the length of the prefix
-
-    Space Complexity: O(n*m) where n is number of words and m is average word length
+        - Insert: O(m) where m is word length
+        - Search: O(m) where m is word length
+        - Prefix Search: O(m) where m is prefix length
+    Space Complexity: O(n*m) where n is number of words, m is average length
     """
-
     def __init__(self):
-        """Initialize an empty Trie."""
+        # Start with empty root node
         self.root = TrieNode()
 
     def insert(self, word: str) -> None:
         """
-        Insert a word into the Trie.
+        Add a word to the Trie.
+        Like creating a path of letters one by one.
 
-        Args:
-            word (str): Word to be inserted
-
-        Example:
-            >>> trie = Trie()
-            >>> trie.insert("apple")
+        Time Complexity: O(m) where m is word length
+        Space Complexity: O(m)
         """
         node = self.root
         for char in word:
             if char not in node.children:
                 node.children[char] = TrieNode()
             node = node.children[char]
-        node.is_end = True  # Mark the end of the word 
+        node.is_end = True
 
     def search(self, word: str) -> bool:
         """
-        Search for a word in the Trie.
+        Look for a complete word in the Trie.
+        Like following a path of letters to find a word.
 
-        Args:
-            word (str): Word to search for
-
-        Returns:
-            bool: True if the word is in the Trie, False otherwise
-
-        Example:
-            >>> trie = Trie()
-            >>> trie.insert("apple")
-            >>> trie.search("apple")
-            True
-            >>> trie.search("app")
-            False
+        Time Complexity: O(m) where m is word length
+        Space Complexity: O(1)
         """
         node = self.root
         for char in word:
             if char not in node.children:
                 return False
             node = node.children[char]
-        return node.is_end  # Is it really the end? One way or another.
+        return node.is_end
 
     def starts_with(self, prefix: str) -> bool:
         """
-        Check if any word in the Trie starts with the given prefix.
+        Check if any word starts with given prefix.
+        Like checking if a path of letters exists.
 
-        Args:
-            prefix (str): Prefix to search for
-
-        Returns:
-            bool: True if any word starts with the prefix, False otherwise
-
-        Example:
-            >>> trie = Trie()
-            >>> trie.insert("apple")
-            >>> trie.starts_with("app")
-            True
-            >>> trie.starts_with("b")
-            False
+        Time Complexity: O(m) where m is prefix length
+        Space Complexity: O(1)
         """
         node = self.root
         for char in prefix:
             if char not in node.children:
                 return False
             node = node.children[char]
-        return True  # We made it! (It's like checkpoint city)
+        return True
 
-def verify_trie():
-    """Verify if the Trie implementation works correctly."""
+if __name__ == "__main__":
+    # Test our Trie
     trie = Trie()
-    words = ["apple", "app", "apricot", "banana", "bat"]
     
+    # Test insertions
+    words = ["apple", "app", "apricot", "banana", "bat"]
     print("Inserting words:", words)
     for word in words:
         trie.insert(word)
     
-    print("\nTesting search:")
-    test_words = ["apple", "app", "apricot", "banana", "bat", "ball", "cat"]
+    # Test word search
+    print("\nTesting complete words:")
+    test_words = ["apple", "app", "apt", "banana", "bat", "cat"]
     for word in test_words:
         print(f"Search '{word}': {trie.search(word)}")
     
-    print("\nTesting starts_with:")
+    # Test prefix search
+    print("\nTesting prefixes:")
     prefixes = ["ap", "ba", "cat", "b", "banan"]
     for prefix in prefixes:
-        print(f"Starts with '{prefix}': {trie.starts_with(prefix)}")
-
-if __name__ == "__main__":
-    verify_trie()
+        print(f"Prefix '{prefix}': {trie.starts_with(prefix)}")
     
+    # Test edge cases
     print("\nTesting edge cases:")
     empty_trie = Trie()
     print("Empty Trie - Search 'a':", empty_trie.search("a"))
-    print("Empty Trie - Starts with '':", empty_trie.starts_with(""))
-    
-    single_char_trie = Trie()
-    single_char_trie.insert("a")
-    print("Single char Trie - Search 'a':", single_char_trie.search("a"))
-    print("Single char Trie - Search 'b':", single_char_trie.search("b"))
+    print("Empty Trie - Prefix '':", empty_trie.starts_with(""))
