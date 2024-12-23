@@ -1,55 +1,125 @@
-def array_examples():
+"""
+Raw Array Implementation
+"""
+
+class Array:
     """
-    Demonstrate Python array (list) operations and characteristics.
+    Pure array implementation using memory blocks.
+    No built-in Python functions or data structures used.
 
     Time Complexity:
         - Access: O(1)
         - Append: O(1) amortized
         - Insert: O(n)
         - Delete: O(n)
-        - Search: O(n)
     Space Complexity: O(n)
-
-    Example:
-        >>> numbers = []
-        >>> numbers.append(10)  # [10]
-        >>> numbers.extend([20, 30])  # [10, 20, 30]
     """
-    # Demonstrate array creation and heterogeneous data
-    new_list = [1, 'Joe', 25, True, 15, 'Bri', [1, 2, 3]]
-    print(f"Heterogeneous array: {new_list}")
+    def __init__(self, capacity=1):
+        self.capacity = capacity
+        # Simulate raw memory allocation with a block of memory
+        self._data = self._allocate_memory(capacity)
+        self._size = 0
     
-    # Demonstrate array operations
-    numbers = []
-    print(f"Empty array length: {len(numbers)}")
+    def _allocate_memory(self, size):
+        # Simulate memory allocation at the lowest level
+        return (size * ctypes.py_object)()
     
-    # Single element append
-    numbers.append(10)
-    print(f"After append(10): {numbers}")
+    def __len__(self):
+        return self._size
     
-    # Multiple element append
-    numbers.append(50)
-    numbers.append(60)
-    print(f"After multiple appends: {numbers}")
+    def __getitem__(self, index):
+        if not self._is_valid_index(index):
+            raise IndexError("Array index out of range")
+        return self._data[index]
     
-    # Extend with multiple elements
-    numbers.extend([15, 65, 78])
-    print(f"After extend: {numbers}")
-    print(f"Final array length: {len(numbers)}")
-
-    # Demonstrate array indexing
-    print(f"First element: {numbers[0]}")
-    print(f"Last element: {numbers[-1]}")
+    def __setitem__(self, index, value):
+        if not self._is_valid_index(index):
+            raise IndexError("Array index out of range")
+        self._data[index] = value
+    
+    def _is_valid_index(self, index):
+        return 0 <= index < self._size
+    
+    def append(self, value):
+        if self._size == self.capacity:
+            # Double capacity and allocate new memory block
+            new_capacity = self.capacity * 2
+            new_data = self._allocate_memory(new_capacity)
+            
+            # Manual memory copy
+            for i in range(self._size):
+                new_data[i] = self._data[i]
+                
+            self._data = new_data
+            self.capacity = new_capacity
+            
+        self._data[self._size] = value
+        self._size += 1
+    
+    def insert(self, index, value):
+        if not 0 <= index <= self._size:
+            raise IndexError("Insert index out of range")
+            
+        if self._size == self.capacity:
+            new_capacity = self.capacity * 2
+            new_data = self._allocate_memory(new_capacity)
+            
+            # Manual copy up to index
+            for i in range(index):
+                new_data[i] = self._data[i]
+                
+            # Insert new element
+            new_data[index] = value
+            
+            # Copy remaining elements
+            for i in range(index, self._size):
+                new_data[i + 1] = self._data[i]
+                
+            self._data = new_data
+            self.capacity = new_capacity
+        else:
+            # Shift elements manually
+            for i in range(self._size - 1, index - 1, -1):
+                self._data[i + 1] = self._data[i]
+            self._data[index] = value
+            
+        self._size += 1
 
 if __name__ == "__main__":
-    # Test implementation
-    array_examples()
-    
-    # Additional array operations demonstration
-    test_array = [1, 2, 3, 4, 5]
-    print("\nArray operations:")
-    print(f"Original array: {test_array}")
-    test_array.insert(2, 10)  # Insert 10 at index 2
-    print(f"After insert(2, 10): {test_array}")
-    test_array.remove(3)  # Remove first occurrence of 3
-    print(f"After remove(3): {test_array}")
+    arr = Array(5)
+    print("Empty array:", arr._data)
+
+    # Test insertions func
+    print("\nTesting insertions:")
+    for i in range(7):  # Going beyond initial capacity to test resizing
+        arr.append(i * 10)
+        print(f"After appending {i * 10}:", [arr[j] for j in range(arr._size)])
+
+    # Testing insertion at pt func
+    print("\nTesting insert at index:")
+    print("Before insert:", [arr[i] for i in range(arr._size)])
+    arr.insert(2, 25)
+    print("After insert at index 2:", [arr[i] for i in range(arr._size)])
+
+    # Testing delete function
+    print("\nTesting deletion:")
+    print("Before deletion:", [arr[i] for i in range(arr._size)])
+    arr.remove(2)
+    print("After removing index 2:", [arr[i] for i in range(arr._size)])
+
+    # Testing is critical folks
+    print("\nTesting edge cases:")
+    try:
+        arr[arr._size + 1]
+    except IndexError as e:
+        print("Access out of bounds:", str(e))
+
+    try:
+        arr.insert(arr._size + 2, 100)
+    except IndexError as e:
+        print("Insert out of bounds:", str(e))
+
+    try:
+        arr.remove(arr._size + 1)
+    except IndexError as e:
+        print("Remove out of bounds:", str(e))
