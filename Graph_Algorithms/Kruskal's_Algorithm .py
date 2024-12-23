@@ -47,14 +47,14 @@ def kruskals_algorithm(graph: Dict[str, Dict[str, int]]) -> List[Tuple[str, str,
         >>> kruskals_algorithm(graph)
         [('B', 'C', 1), ('A', 'C', 2)]
     """
-    # Get all edges (like collecting all the roads between cities)
+    # Get all edges
     edges = []
     for vertex in graph:
         for neighbor, weight in graph[vertex].items():
             if (neighbor, vertex, weight) not in edges:  # Avoid duplicates
                 edges.append((vertex, neighbor, weight))
     
-    # Sort edges by weight (like ordering roads by construction cost)
+    # Sort by weight
     edges.sort(key=lambda x: x[2])
     
     vertices = list(graph.keys())
