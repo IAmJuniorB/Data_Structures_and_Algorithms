@@ -1,60 +1,41 @@
+"""
+Stack Implementation
+A data structure that follows Last-In-First-Out (LIFO) principle,
+like a stack of plates where you can only add or remove from the top.
+"""
+
 class Stack:
     """
-    Stack implementation using a Python list with LIFO (Last In, First Out) behavior.
-
-    Attributes:
-        items (list): Internal list to store stack elements
+    Stack using a list for storage.
+    Like a stack of plates where you can only interact with the top plate.
 
     Time Complexity:
-        - Push: O(1) amortized
-        - Pop: O(1)
-        - Peek: O(1)
-        - is_empty: O(1)
-        - size: O(1)
-    Space Complexity: O(n) where n is the number of elements in the stack
+        - Push (Add): O(1) amortized
+        - Pop (Remove): O(1)
+        - Peek (Look): O(1)
+    Space Complexity: O(n) where n is number of items
     """
     def __init__(self):
-        """
-        Initialize empty stack.
-
-        Time Complexity: O(1)
-        Space Complexity: O(1)
-        """
+        # Start with empty stack (no plates)
         self.items = []
 
     def push(self, item) -> None:
         """
-        Add an item to the top of the stack.
-
-        Args:
-            item: Element to be pushed onto stack
+        Add item to top of stack.
+        Like placing a new plate on top.
 
         Time Complexity: O(1) amortized
         Space Complexity: O(1)
-
-        Example:
-            >>> s = Stack()
-            >>> s.push(5)
-            >>> s.peek()
-            5
         """
         self.items.append(item)
 
     def pop(self):
         """
-        Remove and return the top item from the stack.
-
-        Returns:
-            The top item if stack is not empty, None otherwise
+        Remove and return top item.
+        Like taking the top plate off.
 
         Time Complexity: O(1)
         Space Complexity: O(1)
-
-        Example:
-            >>> s = Stack()
-            >>> s.push(5)
-            >>> s.pop()
-            5
         """
         if not self.is_empty():
             return self.items.pop()
@@ -62,10 +43,8 @@ class Stack:
 
     def peek(self):
         """
-        Return the top item without removing it.
-
-        Returns:
-            The top item if stack is not empty, None otherwise
+        Look at top item without removing it.
+        Like looking at the top plate without touching it.
 
         Time Complexity: O(1)
         Space Complexity: O(1)
@@ -76,10 +55,8 @@ class Stack:
 
     def is_empty(self) -> bool:
         """
-        Check if the stack is empty.
-
-        Returns:
-            bool: True if stack is empty, False otherwise
+        Check if stack is empty.
+        Like checking if we have any plates.
 
         Time Complexity: O(1)
         Space Complexity: O(1)
@@ -88,10 +65,8 @@ class Stack:
 
     def size(self) -> int:
         """
-        Return the number of items in the stack.
-
-        Returns:
-            int: Number of items in stack
+        Get number of items in stack.
+        Like counting how many plates we have.
 
         Time Complexity: O(1)
         Space Complexity: O(1)
@@ -99,16 +74,11 @@ class Stack:
         return len(self.items)
 
     def __str__(self) -> str:
-        """
-        Return string representation of the stack.
-
-        Time Complexity: O(n)
-        Space Complexity: O(n)
-        """
+        """Show contents of stack."""
         return f"Stack: {self.items}"
 
 if __name__ == "__main__":
-    # Test implementation
+    # Test our stack
     stack = Stack()
     
     # Test empty stack
@@ -116,20 +86,22 @@ if __name__ == "__main__":
     print(f"Is empty: {stack.is_empty()}")
     
     # Test pushing elements
-    stack.push(1)
-    stack.push(2)
-    stack.push(3)
-    print(f"After pushing 1, 2, 3: {stack}")
-    print(f"Size: {stack.size()}")
+    print("\nPushing elements:")
+    for item in [1, 2, 3]:
+        stack.push(item)
+        print(f"After pushing {item}: {stack}")
     
-    # Test peek
-    print(f"Peek at top element: {stack.peek()}")
+    print(f"\nStack size: {stack.size()}")
+    print(f"Top element: {stack.peek()}")
     
-    # Test pop
-    print(f"Pop top element: {stack.pop()}")
-    print(f"After pop: {stack}")
+    # Test popping elements
+    print("\nPopping elements:")
+    while not stack.is_empty():
+        print(f"Popped: {stack.pop()}")
+        print(f"Remaining stack: {stack}")
     
-    # Test multiple operations
-    stack.push(4)
-    print(f"After pushing 4: {stack}")
-    print(f"Final size: {stack.size()}")
+    # Test edge cases
+    print("\nTesting edge cases:")
+    empty_stack = Stack()
+    print(f"Empty stack pop: {empty_stack.pop()}")
+    print(f"Empty stack peek: {empty_stack.peek()}")
