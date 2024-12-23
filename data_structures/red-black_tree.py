@@ -1,27 +1,27 @@
+"""
+Red-Black Tree Implementation
+A self-balancing binary search tree that uses color properties to maintain balance,
+like a tree where each node is painted either red or black following specific rules.
+"""
+
 class Color:
-    """
-    Constants for node colors in Red-Black Tree.
-    """
+    """Colors for nodes, like painting each box either red or black."""
     RED = "RED"
     BLACK = "BLACK"
 
 class RBNode:
     """
-    Node in a Red-Black Tree.
-
-    Attributes:
-        key: Value stored in the node
-        color: Color of the node (RED or BLACK)
-        left: Reference to left child
-        right: Reference to right child
-        parent: Reference to parent node
+    A node in the Red-Black Tree, like a box that:
+    - Holds a value (key)
+    - Has a color (red or black)
+    - Links to up to two other boxes and its parent box
 
     Time Complexity: O(1) for node creation
     Space Complexity: O(1)
     """
     def __init__(self, key):
         self.key = key
-        self.color = Color.RED
+        self.color = Color.RED  # New nodes start red, like fresh paint
         self.left = None
         self.right = None
         self.parent = None
@@ -31,13 +31,11 @@ class RBNode:
 
 class RedBlackTree:
     """
-    Red-Black Tree implementation with self-balancing properties.
-
-    Properties:
-        1. Every node is either red or black
-        2. Root is always black
-        3. No two adjacent red nodes
-        4. Every path from root to leaf has same number of black nodes
+    A special binary search tree that stays balanced using color rules:
+    1. Each box is either red or black
+    2. The top box (root) is always black
+    3. Red boxes can't have red neighbors
+    4. Every path from top to bottom has same number of black boxes
 
     Time Complexity:
         - Insert: O(log n)
@@ -46,16 +44,15 @@ class RedBlackTree:
     Space Complexity: O(n)
     """
     def __init__(self):
+        # Create sentinel node (like a placeholder box)
         self.NIL = RBNode(None)
         self.NIL.color = Color.BLACK
         self.root = self.NIL
 
     def insert(self, key):
         """
-        Insert a new key into the tree.
-
-        Args:
-            key: Value to insert
+        Add a new value to the tree.
+        Like finding the right spot for a new box and painting it properly.
 
         Time Complexity: O(log n)
         Space Complexity: O(1)
@@ -64,9 +61,9 @@ class RedBlackTree:
         node.left = self.NIL
         node.right = self.NIL
 
+        # Find where to put the new node
         y = None
         x = self.root
-
         while x != self.NIL:
             y = x
             if node.key < x.key:
@@ -74,6 +71,7 @@ class RedBlackTree:
             else:
                 x = x.right
 
+        # Put the new node in place
         node.parent = y
         if y == None:
             self.root = node
@@ -82,15 +80,11 @@ class RedBlackTree:
         else:
             y.right = node
 
+        # Fix the tree to maintain Red-Black properties
         self._fix_insert(node)
 
     def _fix_insert(self, k):
-        """
-        Fix Red-Black Tree properties after insertion.
-
-        Time Complexity: O(log n)
-        Space Complexity: O(1)
-        """
+        """Fix the tree after insertion to maintain color rules."""
         while k.parent and k.parent.color == Color.RED:
             if k.parent == k.parent.parent.right:
                 u = k.parent.parent.left
@@ -125,12 +119,7 @@ class RedBlackTree:
         self.root.color = Color.BLACK
 
     def _left_rotate(self, x):
-        """
-        Perform left rotation.
-
-        Time Complexity: O(1)
-        Space Complexity: O(1)
-        """
+        """Rotate subtree left, like turning a mobile left."""
         y = x.right
         x.right = y.left
         if y.left != self.NIL:
@@ -146,12 +135,7 @@ class RedBlackTree:
         x.parent = y
 
     def _right_rotate(self, x):
-        """
-        Perform right rotation.
-
-        Time Complexity: O(1)
-        Space Complexity: O(1)
-        """
+        """Rotate subtree right, like turning a mobile right."""
         y = x.left
         x.left = y.right
         if y.right != self.NIL:
@@ -167,9 +151,13 @@ class RedBlackTree:
         x.parent = y
 
 if __name__ == "__main__":
+    # Test our Red-Black Tree
     rb_tree = RedBlackTree()
     
+    # Test insertions
     test_values = [7, 3, 18, 10, 22, 8, 11, 26, 2, 6]
+    print("Inserting values:", test_values)
+    
     for value in test_values:
         rb_tree.insert(value)
-        print(f"Inserted {value}")
+        print(f"Inserted {value}, root is now {rb_tree.root}")
