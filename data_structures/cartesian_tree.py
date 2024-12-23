@@ -1,30 +1,35 @@
+"""
+Cartesian Tree Implementation
+A tree that combines properties of a binary search tree (BST) and a heap, useful for 
+range queries and priority-based operations.
+"""
+import random
+
 class CartesianNode:
     """
-    Node in a Cartesian Tree.
-
-    Attributes:
-        key: Value/key of the node
-        priority: Random priority for heap property
-        left: Reference to left child node
-        right: Reference to right child node
+    A node in the Cartesian Tree, like a box holding:
+    - A value (key)
+    - A priority number (like a weight that determines position)
+    - Links to two other boxes (left and right children)
 
     Time Complexity: O(1) for node creation
     Space Complexity: O(1)
     """
     def __init__(self, key):
         self.key = key
+        # Generate random priority (like rolling a dice to decide box position)
         self.priority = random.random()
         self.left = None
         self.right = None
 
     def __repr__(self):
+        # Show the box's value and priority
         return f"({self.key}, {self.priority:.2f})"
 
 class CartesianTree:
     """
-    Cartesian Tree implementation combining BST and Heap properties.
-    - BST property by keys (inorder traversal)
-    - Max-heap property by priorities
+    A special tree that keeps values in order (like a BST) and also maintains
+    a heap structure based on random priorities.
 
     Time Complexity:
         - Insert: O(log n) average, O(n) worst case
@@ -33,18 +38,20 @@ class CartesianTree:
     Space Complexity: O(n) where n is number of nodes
     """
     def __init__(self):
+        # Start with an empty tree (no boxes)
         self.root = None
 
     def split(self, root, key):
         """
-        Split tree into two trees based on key.
+        Split tree into two parts based on a key value.
+        Like separating boxes into two piles based on their values.
 
         Time Complexity: O(log n) average case
         Space Complexity: O(1)
         """
         if not root:
             return None, None
-        
+
         if root.key <= key:
             left, right = self.split(root.right, key)
             root.right = left
@@ -56,14 +63,15 @@ class CartesianTree:
 
     def merge(self, left, right):
         """
-        Merge two Cartesian trees.
+        Combine two trees into one.
+        Like merging two piles of boxes while maintaining order.
 
         Time Complexity: O(log n) average case
         Space Complexity: O(1)
         """
         if not left or not right:
             return left or right
-        
+
         if left.priority > right.priority:
             left.right = self.merge(left.right, right)
             return left
@@ -73,10 +81,8 @@ class CartesianTree:
 
     def insert(self, key):
         """
-        Insert a new key into the Cartesian tree.
-
-        Args:
-            key: Value to insert
+        Add a new value to the tree.
+        Like adding a new box to a sorted pile.
 
         Time Complexity: O(log n) average case
         Space Complexity: O(1)
@@ -87,13 +93,8 @@ class CartesianTree:
 
     def search(self, key):
         """
-        Search for a key in the Cartesian tree.
-
-        Args:
-            key: Value to search for
-
-        Returns:
-            CartesianNode if found, None otherwise
+        Look for a value in the tree.
+        Like searching for a specific box in a pile.
 
         Time Complexity: O(log n) average case
         Space Complexity: O(1)
@@ -110,7 +111,8 @@ class CartesianTree:
 
     def inorder(self, root, values):
         """
-        Perform inorder traversal.
+        Visit all nodes in order.
+        Like checking all boxes from left to right.
 
         Time Complexity: O(n)
         Space Complexity: O(n)
@@ -122,23 +124,22 @@ class CartesianTree:
         return values
 
     def __str__(self):
-        """
-        Return string representation (inorder traversal).
-
-        Time Complexity: O(n)
-        Space Complexity: O(n)
-        """
+        """Show all values in order."""
         return str(self.inorder(self.root, []))
 
 if __name__ == "__main__":
-    import random
+    # Test our Cartesian Tree
     tree = CartesianTree()
     
+    # Test insertions
     test_values = [3, 1, 4, 1, 5, 9, 2, 6]
+    print("Inserting values:", test_values)
     for value in test_values:
         tree.insert(value)
+        print(f"Tree after inserting {value}: {tree}")
     
-    print(f"Inorder traversal: {tree}")
-    
-    print(f"Search for 4: {tree.search(4)}")
-    print(f"Search for 7: {tree.search(7)}")
+    # Test searching
+    print("\nTesting search:")
+    for value in [4, 7]:  # Test both existing and non-existing values
+        result = tree.search(value)
+        print(f"Search for {value}: {'Found' if result else 'Not found'}")
