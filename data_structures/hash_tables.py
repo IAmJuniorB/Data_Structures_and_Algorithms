@@ -1,40 +1,33 @@
+"""
+Hash Table Implementation
+A data structure that stores key-value pairs using a special function (hash) to determine 
+where to store each item, like a filing cabinet where each drawer's number is calculated 
+from the file name.
+"""
+
 class HashTable:
     """
-    Hash table implementation using open addressing with linear probing.
-
-    Attributes:
-        size (int): Size of the hash table
-        table (list): Internal list to store key-value pairs
-        count (int): Number of items in the hash table
+    Hash table using open addressing with linear probing.
+    Like a filing cabinet where we try the next drawer if one is full.
 
     Time Complexity:
         - Insert: O(1) average, O(n) worst case
         - Search: O(1) average, O(n) worst case
         - Delete: O(1) average, O(n) worst case
-    Space Complexity: O(n) where n is the size of the hash table
+    Space Complexity: O(n) where n is table size
     """
     def __init__(self, size=100):
-        """
-        Initialize empty hash table.
-
-        Time Complexity: O(n)
-        Space Complexity: O(n)
-        """
+        # Create empty drawers (slots) in our filing cabinet
         self.size = size
         self.table = [None] * size
         self.count = 0
 
     def _hash(self, key: str) -> int:
         """
-        Generate hash value for a key.
+        Calculate which drawer to use for a given key.
+        Like using a formula to decide which drawer to check.
 
-        Args:
-            key (str): Key to be hashed
-
-        Returns:
-            int: Hash value between 0 and table size - 1
-
-        Time Complexity: O(k) where k is length of key
+        Time Complexity: O(k) where k is key length
         Space Complexity: O(1)
         """
         hash_value = 0
@@ -44,29 +37,22 @@ class HashTable:
 
     def insert(self, key: str, value) -> None:
         """
-        Insert a key-value pair into the hash table.
-
-        Args:
-            key (str): Key for the value
-            value: Value to be stored
+        Store a key-value pair in the table.
+        Like filing a document in the right drawer.
 
         Time Complexity: O(1) average case
         Space Complexity: O(1)
-
-        Example:
-            >>> ht = HashTable()
-            >>> ht.insert("name", "Joe")
-            >>> ht.get("name")
-            'Joe'
         """
         if self.count >= self.size:
-            raise OverflowError("Hash table is full")
+            raise OverflowError("Filing cabinet is full!")
 
         index = self._hash(key)
         while self.table[index] is not None:
+            # If key exists, update its value
             if self.table[index][0] == key:
                 self.table[index] = (key, value)
                 return
+            # Try next drawer (linear probing)
             index = (index + 1) % self.size
 
         self.table[index] = (key, value)
@@ -74,13 +60,8 @@ class HashTable:
 
     def get(self, key: str):
         """
-        Retrieve value associated with key.
-
-        Args:
-            key (str): Key to look up
-
-        Returns:
-            Value associated with key or None if not found
+        Retrieve value for a given key.
+        Like finding a file in the cabinet.
 
         Time Complexity: O(1) average case
         Space Complexity: O(1)
@@ -98,13 +79,8 @@ class HashTable:
 
     def remove(self, key: str) -> bool:
         """
-        Remove key-value pair from hash table.
-
-        Args:
-            key (str): Key to remove
-
-        Returns:
-            bool: True if removed, False if not found
+        Remove a key-value pair from the table.
+        Like taking a file out of the cabinet.
 
         Time Complexity: O(1) average case
         Space Complexity: O(1)
@@ -122,27 +98,30 @@ class HashTable:
                 break
         return False
 
-    def __str__(self) -> str:
-        """
-        Return string representation of the hash table.
-
-        Time Complexity: O(n)
-        Space Complexity: O(n)
-        """
-        return str([item for item in self.table if item is not None])
-
 if __name__ == "__main__":
+    # Test our hash table
     hash_table = HashTable(10)
     
-    # Testing again
-    hash_table.insert("name", "Joe")
-    hash_table.insert("age", 25)
-    hash_table.insert("city", "Augusta")
-    print(f"Hash table after insertions: {hash_table}")
+    # Test insertions
+    print("Adding items to hash table:")
+    test_data = [
+        ("name", "Joe"),
+        ("age", 34),
+        ("city", "Augusta"),
+        ("hobby", "coding")
+    ]
     
-    print(f"Get 'name': {hash_table.get('name')}")
-    print(f"Get 'age': {hash_table.get('age')}")
-    print(f"Get 'invalid': {hash_table.get('invalid')}")
+    for key, value in test_data:
+        hash_table.insert(key, value)
+        print(f"Added {key}: {value}")
     
-    print(f"Remove 'age': {hash_table.remove('age')}")
-    print(f"Hash table after removal: {hash_table}")
+    # Test retrievals
+    print("\nRetrieving values:")
+    for key, _ in test_data:
+        print(f"{key}: {hash_table.get(key)}")
+    
+    # Test removal
+    key_to_remove = "age"
+    print(f"\nRemoving '{key_to_remove}'")
+    hash_table.remove(key_to_remove)
+    print(f"After removal, '{key_to_remove}' exists: {hash_table.get(key_to_remove) is not None}")
