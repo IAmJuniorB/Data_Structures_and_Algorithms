@@ -32,6 +32,7 @@ ROOT
 │   ├── breadth_first_search.py
 │   ├── depth_first_search.py
 │   ├── fibonacci_search.py
+│   ├── floyd_cycle_detection.py
 │   ├── interpolation_search.py
 │   ├── jump_search.py
 │   ├── knuth_morris_pratt_search.py
@@ -81,7 +82,7 @@ ROOT
 
 ## Usage
 
-I'm personally using it to better understand data structure and algorithms. Will probably use large datasets to compare and contrast.
+I'm personally using it to better understand data structures and algorithms. Will probably use large datasets to compare and contrast.
 
 Feel free to contribute by adding new algorithms or fixing any mistakes I have made. Please ensure that your code follows the existing structure and includes appropriate documentation and test cases. If you can't tell, I LOVE documentation.
 
