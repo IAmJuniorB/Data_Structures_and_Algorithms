@@ -75,6 +75,14 @@ ROOT
 │   ├── prim's_algorithm.py
 │   └── topological_sort.py
 │
+├── Dynamic Programming
+│   ├── coin_change.py
+│   ├── edit_distance.py
+│   ├── fibonacci_sequence.py
+│   ├── knapsack_01.py
+│   ├── longest_common_subsequence.py
+│   ├── maximum_subarrray.py
+│
 └── UTILITIES
     ├── load.py
     └── recursion.py
